@@ -1,11 +1,12 @@
 const { Router } = require("express");
 const usuariosRutas = Router();
 const { usuariosInternosModelos } = require("../modelos/usuariosInternosModelos")
+const { userAuthguard } = require("../guard/userAuthguard");
 const { compare } = require("bcrypt");
 const {sign} = require("jsonwebtoken");
 const { userGuard } = require("../guard/userguard");
 
-usuariosRutas.get("/listar", function (req, res) {
+usuariosRutas.get("/listar", userAuthguard, function (req, res) {
     usuariosInternosModelos.find( function (error, usu) {
         if (error) {
             return res.send({estado: "error", msg: "Error al buscar usuario"})
@@ -46,7 +47,7 @@ usuariosRutas.post("/login", async function (req, res) {
     //Responder OK / Error
 });
 //usuariosRutas.post("/guardar", userGuard, function (req, res) {
-usuariosRutas.post("/guardar", function (req, res) {
+usuariosRutas.post("/guardar", userAuthguard, function (req, res) {
     //Captura los datos
     const data = req.body;
     //Instancia el modelo y pobla con los datos
