@@ -4,7 +4,6 @@ const { usuariosInternosModelos } = require("../modelos/usuariosInternosModelos"
 const { compare } = require("bcrypt");
 const {sign} = require("jsonwebtoken");
 const { userGuard } = require("../guard/userguard");
-const usuariosSchema = require("../modelos/usuariosInternosModelos")
 
 usuariosRutas.get("/listar", function (req, res) {
     usuariosInternosModelos.find( function (error, usu) {
@@ -46,20 +45,35 @@ usuariosRutas.post("/login", async function (req, res) {
     return res.status(401).send({ estado: "error", msg: "Credenciales no validas"});
     //Responder OK / Error
 });
-
-usuariosRutas.post("/registro", userGuard, function (req, res) {
+//usuariosRutas.post("/guardar", userGuard, function (req, res) {
+usuariosRutas.post("/guardar", function (req, res) {
     //Captura los datos
     const data = req.body;
-    //Instancia el modelo y pola con los datos
+    //Instancia el modelo y pobla con los datos
     const user = new usuariosInternosModelos(data);
     //Guardar en BD
     user.save(function (error) {
         if (error) {
-            return res.status(500).send({ estado: "error", msg: "Usuario no guardado"})
+            return res.status(500).json({ estado: "error", msg: "Usuario no guardado"});
         }
         return res.status(200).send({ estado: "OK", msg: "Usuario guardado"})
     })
     //Responde OK / error
 })
+
+usuariosRutas.post("/registro", function (req, res) {
+    const data = req.body;
+    //Instancia el modelo y pobla con los datos
+    const ext = new usuariosInternosModelos(data);
+    //Guardar en BD
+    ext.save(function (error) {
+        if (error) {
+            return res.status(500).json({ estado: "error", msg: "Error al registrarse"});
+        }
+        return res.status(200).send({ estado: "OK", msg: "Usuario registrado"});
+    })
+    //Responde OK / error
+})
+
 
 exports.usuariosRutas = usuariosRutas;

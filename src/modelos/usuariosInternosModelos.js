@@ -1,27 +1,35 @@
 const { model, Schema } = require("mongoose");
 const {genSalt, hash} = require("bcrypt");
+
 const usuariosSchema = new Schema({
-    nombre:{
+    nombres:{
         type: "string",
         required: true
     },
-    apellido:{
+    apellidos:{
+        type: "string",
+        required: true
+    },
+    tipodocumento:{
         type: "string",
         required: true
     },
     documento:{
         type: "number",
-        unique: true,
+        required: true
+    },
+    correo:{
+        type: "string",
+        required: true
+    },
+    rol:{
+        type: "string",
         required: true
     },
     contraseña:{
         type: "string",
         required: true,
         min: 6
-    },
-    rol:{
-        type: "string",
-        required: true
     }
 
 });
