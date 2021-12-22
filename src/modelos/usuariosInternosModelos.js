@@ -1,44 +1,50 @@
 const { model, Schema } = require("mongoose");
-const {genSalt, hash} = require("bcrypt");
+const { genSalt, hash } = require("bcrypt");
 
 const usuariosSchema = new Schema({
-    nombres:{
-        type: "string",
-        required: true
-    },
-    apellidos:{
-        type: "string",
-        required: true
-    },
-    tipodocumento:{
-        type: "string",
-        required: true
-    },
-    documento:{
-        type: "number",
-        required: true
-    },
-    correo:{
-        type: "string",
-        required: true
-    },
-    rol:{
-        type: "string",
-        required: true
-    },
-    contraseña:{
-        type: "string",
-        required: true,
-        min: 6
-    }
-
+  nombres: {
+    type: String,
+    required: true,
+  },
+  apellidos: {
+    type: String,
+    required: true,
+  },
+  tipodocumento: {
+    type: String,
+    required: true,
+  },
+  documento: {
+    type: Number,
+    required: true,
+  },
+  correo: {
+    type: String,
+    required: true,
+  },
+  rol: {
+    type: String,
+    required: true,
+  },
+  contrasena: {
+    type: String,
+    required: true,
+    min: 6,
+  },
+  activo: { type: Boolean, required: true },
 });
 
 usuariosSchema.pre("save", async function (next) {
-    const salt = await genSalt(+process.env.BCRYPT_ROUNDS);
-    this.contraseña = await hash(this.contraseña,salt);
-    next();
-})
+  const salt = await genSalt(+process.env.BCRYPT_ROUNDS);
+  this.contrasena = await hash(this.contrasena, salt);
+  next();
+});
+
+usuariosSchema.pre("update", async function (next) {
+  const salt = await genSalt(+process.env.BCRYPT_ROUNDS);
+  this.contrasena = await hash(this.contrasena, salt);
+  next();
+});
 
 // module.exports = mongoose.model("internos", usuariosInternosModelos);
 const usuariosInternosModelos = model("internos", usuariosSchema);
